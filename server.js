@@ -32,7 +32,7 @@ var uploading = multer({
 
 
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/test-node-express'); //  connect our database
+mongoose.connect('mongodb://lazantsy:mohamad@ds045137.mlab.com:45137/jany_mean'); //  connect our database
 
 var Bear = require('./app/models/bear');
 
