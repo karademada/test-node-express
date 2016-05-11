@@ -1,0 +1,14 @@
+{
+  "name": "node-api",
+  "main": "server.js",
+  "dependencies": {
+    "body-parser": "~1.0.1",
+    "express": "~4.0.0",
+    "mongoose": "~3.6.13",
+    "multer": "^1.1.0"
+  },
+  "devDependencies": {
+    "angular-loading-bar": "^0.9.0",
+    "chai": "^3.5.0"
+  }
+}

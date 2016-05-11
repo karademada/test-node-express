@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html id="ng-app" ng-app="app"> <!-- id="ng-app" IE<8 -->
+
+<head>
+    <title>Simple example</title>
+    <link rel="stylesheet"
+          href="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0-rc2/angular-material.min.css">
+    <link rel="stylesheet" href="../../dist/loading-bar.css"/>
+    <link rel="stylesheet" href="css/main.css">
+
+    <!-- Fix for old browsers -->
+    <script src="http://nervgh.github.io/js/es5-shim.min.js"></script>
+    <script src="http://nervgh.github.io/js/es5-sham.min.js"></script>
+    <script src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
+    <script src="../console-sham.js"></script>
+
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+
+    <!--<script src="../bower_components/angular/angular.js"></script>-->
+    <!-- Angular Material requires Angular.js Libraries -->
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-animate.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-aria.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-messages.min.js"></script>
+
+    <!-- Angular Material Library -->
+    <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0-rc2/angular-material.min.js"></script>
+    <script src="../../dist/angular-file-upload.min.js"></script>
+    <script src="../../dist/loading-bar.js"></script>
+    <script src="controllers.js"></script>
+
+    <style>
+        .my-drop-zone {
+            border: dotted 3px lightgray;
+        }
+
+        .nv-file-over {
+            border: dotted 3px red;
+        }
+
+        /* Default class applied to drop zones on over */
+        .another-file-over-class {
+            border: dotted 3px green;
+        }
+
+        html, body {
+            height: 100%;
+        }
+    </style>
+
+</head>
+
+<!-- 1. nv-file-drop="" uploader="{Object}" options="{Object}" filters="{String}" -->
+<body class="md-content" layout="column" layout-padding ng-controller="AppController as ctrl" nv-file-drop=""
+      uploader="uploader" filters="queueLimit, customFilter">
+
+<div class="page-container">
+
+    <md-toobar class="navbar-header">
+        <h2 class="md-toolbar-tools"><span>Angular File Upload</span></h2>
+    </md-toobar>
+
+    <div class="page">
+
+        <div class="md-inline-form">
+            <md-input-container>
+                <h3>Select files</h3>
+            </md-input-container>
+
+            <div ng-show="uploader.isHTML5" layout-padding>
+                <!-- 3. nv-file-over uploader="link" over-class="className" -->
+                <div class="md-input-container my-drop-zone" nv-file-over="" uploader="uploader">
+                    Base drop zone
+                </div>
+
+                <!-- Example: nv-file-drop="" uploader="{Object}" options="{Object}" filters="{String}" -->
+                <md-input-container>
+
+                    <div nv-file-drop="" uploader="uploader" options="{ url: '/foo' }">
+                        <div nv-file-over="" uploader="uploader" over-class="another-file-over-class"
+                             class="md-input-container my-drop-zone">
+                            Another drop zone with its own settings
+                        </div>
+                    </div>
+                </md-input-container>
+            </div>
+
+            <!-- Example: nv-file-select="" uploader="{Object}" options="{Object}" filters="{String}" -->
+            <md-input-container layout-padding>
+                    <p>Multiple</p>
+                    <input type="file" nv-file-select="" uploader="uploader" multiple/><br/>
+
+            </md-input-container>
+            <md-input-container layout-padding>
+
+                    <p layout-padding>Single</p>
+                    <input type="file" nv-file-select="" uploader="uploader"/>
+
+
+            </md-input-container>
+
+        </div>
+
+        <div layout-padding>
+
+            <h3>Upload queue</h3>
+
+            <p>Queue length: {{ uploader.queue.length }}</p>
+
+            <md-list>
+                <md-subheader class="md-no-sticky">Queue length: {{ uploader.queue.length }}</md-subheader>
+                <md-list-item class="md-3-line" ng-repeat="item in uploader.queue">
+                    <div class="md-list-item-text" layout="column">
+                        <h3>{{ item.file.name }}</h3>
+                        <p>{{ item.isError }}</p>
+                        <p>{{ item.isCancel }}</p>
+                        <p>{{ item._file }}</p>
+                        <div ng-show="uploader.isHTML5" ng-thumb="{file:item._file,height:100}"></div>
+                        <!--<img ng-src="{{ item.path }}" class="md-avatar" alt="{{ item.file.name }}"/>-->
+                    </div>
+                    <md-progress-linear md-mode="determinate" value="{{ ctrl.progressValue }}"></md-progress-linear>
+                </md-list-item>
+            </md-list>
+
+            <!--table class="table">
+                <thead>
+                <tr>
+                    <th width="50%">Name</th>
+                    <th ng-show="uploader.isHTML5">Size</th>
+                    <th ng-show="uploader.isHTML5">Progress</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="item in uploader.queue">
+                    <td><strong>{{ item.file.name }}</strong></td>
+                    <td ng-show="uploader.isHTML5" nowrap>{{ item.file.size/1024/1024|number:2 }} MB</td>
+                    <td ng-show="uploader.isHTML5">
+                        <div class="progress" style="margin-bottom: 0;">
+                            <div class="progress-bar" role="progressbar"
+                                 ng-style="{ 'width': item.progress + '%' }"></div>
+                        </div>
+                    </td>
+                    <td class="text-center">
+                        <span ng-show="item.isSuccess"><i class="glyphicon glyphicon-ok"></i></span>
+                        <span ng-show="item.isCancel"><i class="glyphicon glyphicon-ban-circle"></i></span>
+                        <span ng-show="item.isError"><i class="glyphicon glyphicon-remove"></i></span>
+                    </td>
+                    <td nowrap>
+                        <md-button type="button" class="btn btn-success btn-xs" ng-click="item.upload()"
+                                ng-disabled="item.isReady || item.isUploading || item.isSuccess">
+                            <span class="glyphicon glyphicon-upload"></span> Upload
+                        </md-button>
+                        <md-button type="button" class="btn btn-warning btn-xs" ng-click="item.cancel()"
+                                ng-disabled="!item.isUploading">
+                            <span class="glyphicon glyphicon-ban-circle"></span> Cancel
+                        </md-button>
+                        <md-button type="button" class="btn btn-danger btn-xs" ng-click="item.remove()">
+                            <span class="glyphicon glyphicon-trash"></span> Remove
+                        </md-button>
+                    </td>
+                </tr>
+                </tbody>
+            </table-->
+
+            <div>
+                <div>
+                    Queue progress:
+                    <!--div class="progress" style="">
+                        <div class="progress-bar" role="progressbar" ng-style="{ 'width': uploader.progress + '%' }"></div>
+                    </div-->
+
+                </div>
+                <div class="loading-bar-container">sa mere</div>
+
+            </div>
+            <button type="button" class="btn btn-success btn-s" ng-click="uploader.uploadAll()"
+                    ng-disabled="!uploader.getNotUploadedItems().length">
+                <span class="glyphicon glyphicon-upload"></span> Upload all
+            </button>
+            <button type="button" class="btn btn-warning btn-s" ng-click="uploader.cancelAll()"
+                    ng-disabled="!uploader.isUploading">
+                <span class="glyphicon glyphicon-ban-circle"></span> Cancel all
+            </button>
+            <button type="button" class="btn btn-danger btn-s" ng-click="uploader.clearQueue()"
+                    ng-disabled="!uploader.queue.length">
+                <span class="glyphicon glyphicon-trash"></span> Remove all
+            </button>
+        </div>
+
+    </div>
+
+</div>
+
+</div>
+
+</body>
+</html>
