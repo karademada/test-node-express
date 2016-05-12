@@ -43,14 +43,15 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
 // static files
-app.use(express.static('public'));
+app.use(express.static('dist'));
 
 // multer
 
 console.log(__dirname + '/public/uploads/');
+console.log(process.env.NODE_ENV)
+console.log(process.env.PORT)
 
-
-var port = process.env.PORT || 8080;        // set our port
+var port = process.env.PORT || 5000;        // set our port
 
 // ROUTES FOR API
 // =============================================================================
